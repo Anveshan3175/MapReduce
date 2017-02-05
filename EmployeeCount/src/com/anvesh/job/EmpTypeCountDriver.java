@@ -119,7 +119,6 @@ public class EmpTypeCountDriver {
 			while(values.iterator().hasNext()){
 				sum+= values.iterator().next().get();
 			}
-			
 			ctx.write(key,new IntWritable(sum));
 		}
 	}
