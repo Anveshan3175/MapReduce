@@ -119,24 +119,30 @@ public class WordCountDriver {
 	 * Bye,1  ...
 	 * 
 	 */
-	public static class WordCountReducer extends Reducer<Text, IntWritable, Text, IntWritable>{
+public static class WordCountReducer extends Reducer<Text, IntWritable, Text, IntWritable>{
 		
-		int sum = 0;
+		int maxOccurance = 0;
+		String mostRepeatedWord = null;
 		
 		@Override
 		public void reduce(Text key,Iterable<IntWritable> values,Context ctx) throws IOException, InterruptedException{
 			
 			System.out.println("This is in reducer reduce code");
+			int sum = 0;
 			
 			while(values.iterator().hasNext()){
 				sum+= values.iterator().next().get();
+			}
+			if(maxOccurance < sum) {
+				maxOccurance = sum;
+				mostRepeatedWord = key.toString();
 			}
 			ctx.write(key,new IntWritable(sum));
 		}
 		
 		@Override
 		public void cleanup(Context ctx) throws IOException, InterruptedException{
-			ctx.write(new Text("Most repeated word"),new IntWritable(sum));
+			ctx.write(new Text("Most repeated word is "+mostRepeatedWord +" and occurs "),new IntWritable(maxOccurance));
 			System.out.println("This is in reducer cleanup code");
 		}
 	}
